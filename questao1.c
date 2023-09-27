@@ -1,7 +1,3 @@
-#include <stdio.h>
-#include <stdlib.h>
-
-int main(void) {
-
-    return EXIT_SUCCESS;
-}
+// A alocação estática acontece antes que o programa comece a ser executado.
+//Enquanto isso, a alocação dinâmica ocorre em tempo de execução e 
+//permite o gerenciamento mais flexível da memória.
