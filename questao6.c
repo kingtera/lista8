@@ -21,7 +21,7 @@ int main() {
         }
     }
 
-    int resultado = triangular(&matriz[l][c], l, c);
+    int resultado = triangular(&matriz[0][0], l, c);
 
     if (resultado) {
         printf("A matriz e triangular inferior.\n");
@@ -39,7 +39,6 @@ int triangular(int *M, int l, int c) {
 
     for (int i = 0; i < l; i++) {
         for (int j = i + 1; j < c; j++) {
-            //ERRO ESTA AQUI
             if (*(M + i * c + j) != 0) {
                 return 0;
             }
