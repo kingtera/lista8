@@ -1,58 +1,44 @@
 #include <stdio.h>
 #include <stdlib.h>
 
-int * criaVetor(int tamanhoVetor);
+typedef struct no {
+    int valor;
+    struct no *prox;
+} No;
 
-int main(void) {
-    int tamanho = 0;
-    int *x, *y;
+int conta_lista(No *p) {
+    int contador = 0;
 
-    printf("Digite o tamanho dos vetores: ");
-    scanf("%d", &tamanho);
-
-    printf("\n-----Vetor X-----");
-    x = criaVetor(tamanho);
-
-    printf("\n-----Vetor Y-----");
-    y = criaVetor(tamanho);
-
-    printf("\nO produto escalar entre X e Y e: ");
-    // int resultado[tamanho];
-
-    for (int i = 0; i < tamanho; i++) {
-        int resultado = 0;
-        resultado = (*x) * y[i];
-        printf(" %d ", resultado);
-
-        x++;
+    while (p != NULL) {
+        contador++;
+        p = p->prox;
     }
 
-    free(x);
-    free(y);
-
-    return EXIT_SUCCESS;
+    return contador;
 }
 
-int * criaVetor(int tamanhoVetor) {
-    int *vetor;
+int main() {
+    No *lista = (No *)malloc(sizeof(No));
+    lista->valor = 1;
 
-    printf("\nCriando vetor\n");
+    lista->prox = (No *)malloc(sizeof(No));
+    lista->prox->valor = 2;
 
-    vetor = (int *) malloc(tamanhoVetor*sizeof(int));
-    if(vetor == NULL) exit(EXIT_FAILURE);
+    lista->prox->prox = (No *)malloc(sizeof(No));
+    lista->prox->prox->valor = 3;
 
-    for(int i = 0; i < tamanhoVetor; i++) {
-        int n = 0;
-        printf("Digite o %d numero do vetor (deve estar entre 1 e 100): ", i+1);
-        scanf("%d", &n);
+    lista->prox->prox->prox = NULL;
 
-        while (n < 1 || n > 100) {
-            printf("\nNumero invalido, digite novamente: ");
-            scanf("%d", &n);
-        }
+    int resultado = conta_lista(lista);
 
-        vetor[i] = n;
+    printf("O numero de celulas na lista ligada e: %d\n", resultado);
+
+    No *temp;
+    while (lista != NULL) {
+        temp = lista;
+        lista = lista->prox;
+        free(temp);
     }
 
-    return vetor;
+    return 0;
 }

@@ -1,62 +1,50 @@
 #include <stdio.h>
 #include <stdlib.h>
 
-double * criaVetor(int dimensao);
+typedef struct no {
+    int valor;
+    struct no *prox;
+} No;
 
-void imprimeVetor(double *vetor, int dimensao);
+No* busca_lista(No **p, int x) {
+    No *atual = *p;
 
-int main(void) {
-    int dimensao = 0;
-
-    printf("Digite a dimensao do vetor: ");
-    scanf("%d", &dimensao);
-
-    printf("---Vetor 1---");
-    double *vetor1 = criaVetor(dimensao);
-
-    printf("---Vetor2---");
-    double *vetor2 = criaVetor(dimensao);
-
-    printf("Vetor 1: ");
-    imprimeVetor(vetor1, dimensao);
-
-    printf("\nVetor 2: ");
-    imprimeVetor(vetor2, dimensao);
-
-    printf("\nResultado da soma dos vetores:\n");
-    for (int i = 0; i < dimensao; i++) {
-        printf("%.2lf ", (*vetor1) + (*vetor2));
-        vetor1++;
-        vetor2++;
+    while (atual != NULL) {
+        if (atual->valor == x) {
+            return atual;
+        }
+        atual = atual->prox;
     }
 
-
-    free(vetor1);
-    free(vetor2);
-
-    return EXIT_SUCCESS;
+    return NULL;
 }
 
-double * criaVetor(int dimensao) {
-    double *vetor;
+int main() {
+    No *lista = (No *)malloc(sizeof(No));
+    lista->valor = 1;
 
-    printf("\nCriando vetor\n");
+    lista->prox = (No *)malloc(sizeof(No));
+    lista->prox->valor = 2;
 
-    vetor = (double *) malloc(dimensao * sizeof(double));
-    if(vetor == NULL) exit(EXIT_FAILURE);
+    lista->prox->prox = (No *)malloc(sizeof(No));
+    lista->prox->prox->valor = 3;
 
-    for(int i = 0; i < dimensao; i++) {
-        int n = 0;
-        printf("Digite o %d numero do vetor: ", i+1);
-        scanf("%d", &n);
-        vetor[i] = n;
+    lista->prox->prox->prox = NULL;
+
+    int elemento = 2;
+    No *resultado = busca_lista(&lista, elemento);
+
+    if (resultado != NULL) {
+        printf("Elemento %d encontrado na lista.\n", elemento);
+    } else {
+        printf("Elemento %d nao encontrado na lista.\n", elemento);
     }
 
-    return vetor;
-}
-
-void imprimeVetor(double *vetor, int dimensao) {
-    for(int i = 0; i < dimensao; i++) {
-        printf(" %lf ", vetor[i]);
+    while (lista != NULL) {
+        No *temp = lista;
+        lista = lista->prox;
+        free(temp);
     }
+
+    return 0;
 }

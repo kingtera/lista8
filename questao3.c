@@ -1,25 +1,45 @@
 #include <stdio.h>
 #include <stdlib.h>
 
-int *misterio(int n) {
-    int i, *vet = malloc(n * sizeof(int));
-    vet[0] = 1;
-    for (i = 1; i < n; i++)
-        vet[i] = i * vet[i - 1];
-    return vet;
+typedef struct no {
+    int valor;
+    struct no *prox;
+} No;
+
+void insere_comeco(No **p, int x) {
+    No *novoNo = (No *)malloc(sizeof(No));
+    if (novoNo == NULL) {
+        printf("Erro ao alocar memoria para o novo no.\n");
+        return;
+    }
+
+    novoNo->valor = x;
+    novoNo->prox = *p;
+
+    *p = novoNo;
 }
 
 int main() {
-    int i, n, *v;
-    printf("Digite n:");
-    scanf("%d", &n);
-    v = misterio(n);
-    for (i = 0; i < n; i++)
-        printf("%d\n", v[i]);
-    free(v);
+    No *lista = (No *)malloc(sizeof(No));
+    lista->valor = 2;
+    lista->prox = NULL;
+
+    int elemento = 1;
+    insere_comeco(&lista, elemento);
+
+    printf("Elementos da lista ligada:\n");
+    while (lista != NULL) {
+        printf("%d ", lista->valor);
+        lista = lista->prox;
+    }
+    printf("\n");
+
+    No *temp;
+    while (lista != NULL) {
+        temp = lista;
+        lista = lista->prox;
+        free(temp);
+    }
+
     return 0;
 }
-
-//para n = 3, o retorno é 1, 1 e 2
-//o codigo não apresenta nenhum erro. Um único ponto é que seria recomendável adicionar uma verificação logo após o malloc com o
-// objetivo de assegurar que a alocação dinâmica foi realizada e concluída com sucesso.

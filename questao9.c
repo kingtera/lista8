@@ -1,100 +1,54 @@
 #include <stdio.h>
 #include <stdlib.h>
 
-int **multiplicaM(int *A, int l1, int c1, int *B, int l2, int c2) {
-    if (c1 != l2) {
-        printf("As matrizes não podem ser multiplicadas. O número de colunas de A deve ser igual ao número de linhas de B.\n");
-        return NULL;
+typedef struct no {
+    int valor;
+    struct no *prox;
+} No;
+
+void insere_ordenado(No **p, int x) {
+    No *novoNo = (No *)malloc(sizeof(No));
+    novoNo->valor = x;
+    novoNo->prox = NULL;
+
+    if (*p == NULL || x <= (*p)->valor) {
+        novoNo->prox = *p;
+        *p = novoNo;
+        return;
     }
 
-    int **C = (int **)malloc(l1 * sizeof(int *));
-    if (C == NULL) {
-        perror("Erro ao alocar memoria para C");
-        return NULL;
+    No *atual = *p;
+    while (atual->prox != NULL && atual->prox->valor < x) {
+        atual = atual->prox;
     }
 
-    for (int i = 0; i < l1; i++) {
-        C[i] = (int *)malloc(c2 * sizeof(int));
-        if (C[i] == NULL) {
-            perror("Erro ao alocar memoria para C");
-            for (int j = 0; j < i; j++) {
-                free(C[j]);
-            }
-            free(C);
-            return NULL;
-        }
-    }
-
-    for (int i = 0; i < l1; i++) {
-        for (int j = 0; j < c2; j++) {
-            C[i][j] = 0;
-            for (int k = 0; k < c1; k++) {
-                C[i][j] += A[i * c1 + k] * B[k * c2 + j];
-            }
-        }
-    }
-
-    return C;
+    novoNo->prox = atual->prox;
+    atual->prox = novoNo;
 }
 
 int main() {
-    int l1, c1, l2, c2;
+    No *lista = (No *)malloc(sizeof(No));
+    lista->valor = 1;
 
-    printf("Digite o numero de linhas da matriz A: ");
-    scanf("%d", &l1);
+    lista->prox = (No *)malloc(sizeof(No));
+    lista->prox->valor = 3;
 
-    printf("Digite o numero de colunas da matriz A: ");
-    scanf("%d", &c1);
+    lista->prox->prox = (No *)malloc(sizeof(No));
+    lista->prox->prox->valor = 5;
 
-    printf("Digite o numero de linhas da matriz B: ");
-    scanf("%d", &l2);
+    lista->prox->prox->prox = NULL;
 
-    printf("Digite o numero de colunas da matriz B: ");
-    scanf("%d", &c2);
+    int elemento = 4;
+    insere_ordenado(&lista, elemento);
 
-    if (c1 != l2) {
-        printf("As matrizes não podem ser multiplicadas. O numero de colunas de A deve ser igual ao numero de linhas de B.\n");
-        return EXIT_FAILURE;
+    printf("Lista ordenada:\n");
+    while (lista != NULL) {
+        printf("%d ", lista->valor);
+        No *temp = lista;
+        lista = lista->prox;
+        free(temp);
     }
+    printf("\n");
 
-    int *A = (int *)malloc(l1 * c1 * sizeof(int));
-    int *B = (int *)malloc(l2 * c2 * sizeof(int));
-
-    printf("Digite os elementos da matriz A:\n");
-    for (int i = 0; i < l1; i++) {
-        for (int j = 0; j < c1; j++) {
-            scanf("%d", &A[i * c1 + j]);
-        }
-    }
-
-    printf("Digite os elementos da matriz B:\n");
-    for (int i = 0; i < l2; i++) {
-        for (int j = 0; j < c2; j++) {
-            scanf("%d", &B[i * c2 + j]);
-        }
-    }
-
-    int **C = multiplicaM(A, l1, c1, B, l2, c2);
-
-    if (C == NULL) {
-        return EXIT_FAILURE;
-    }
-
-    printf("Resultado da multiplicacao C = A x B:\n");
-    for (int i = 0; i < l1; i++) {
-        for (int j = 0; j < c2; j++) {
-            printf("%d ", C[i][j]);
-        }
-        printf("\n");
-    }
-
-    // Libera a memória alocada
-    for (int i = 0; i < l1; i++) {
-        free(C[i]);
-    }
-    
-    free(C);
-    free(A);
-    free(B);
-    return EXIT_SUCCESS;
+    return 0;
 }

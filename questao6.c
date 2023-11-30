@@ -1,49 +1,73 @@
 #include <stdio.h>
 #include <stdlib.h>
 
-int triangular(int *M, int l, int c);
+typedef struct no {
+    int valor;
+    struct no *prox;
+} No;
 
-int main() {
-    int l, c;
+No* extrai_pares(No *p) {
+    No *novaLista = NULL;
+    No *ultimoPar = NULL;
 
-    printf("Digite o numero de linhas da matriz: ");
-    scanf("%d", &l);
+    while (p != NULL) {
+        if (p->valor % 2 == 0) {
+            No *novoNo = (No *)malloc(sizeof(No));
+            if (novoNo == NULL) {
+                // Tratamento de erro na alocação de memória
+                printf("Erro ao alocar memoria para o novo no.\n");
+                return NULL;
+            }
 
-    printf("Digite o numero de colunas da matriz: ");
-    scanf("%d", &c);
+            novoNo->valor = p->valor;
+            novoNo->prox = NULL;
 
-    int matriz[l][c];
-
-    printf("Digite os elementos da matriz:\n");
-    for (int i = 0; i < l; i++) {
-        for (int j = 0; j < c; j++) {
-            scanf("%d", &matriz[i][j]);
-        }
-    }
-
-    int resultado = triangular(&matriz[0][0], l, c);
-
-    if (resultado) {
-        printf("A matriz e triangular inferior.\n");
-    } else {
-        printf("A matriz nao e triangular inferior.\n");
-    }
-
-    return EXIT_SUCCESS;
-}
-
-int triangular(int *M, int l, int c) {
-    if (l != c) {
-        return 0;
-    }
-
-    for (int i = 0; i < l; i++) {
-        for (int j = i + 1; j < c; j++) {
-            if (*(M + i * c + j) != 0) {
-                return 0;
+            if (novaLista == NULL) {
+                novaLista = novoNo;
+                ultimoPar = novoNo;
+            } else {
+                ultimoPar->prox = novoNo;
+                ultimoPar = novoNo;
             }
         }
+
+        p = p->prox;
     }
 
-    return 1;
+    return novaLista;
+}
+
+int main() {
+    No *lista = (No *)malloc(sizeof(No));
+    lista->valor = 1;
+
+    lista->prox = (No *)malloc(sizeof(No));
+    lista->prox->valor = 2;
+
+    lista->prox->prox = (No *)malloc(sizeof(No));
+    lista->prox->prox->valor = 3;
+
+    lista->prox->prox->prox = NULL;
+
+    No *listaPares = extrai_pares(lista);
+
+    printf("Lista original:\n");
+    while (lista != NULL) {
+        printf("%d ", lista->valor);
+        No *temp = lista;
+        lista = lista->prox;
+        free(temp);
+    }
+    printf("\n");
+
+    printf("Lista de pares:\n");
+    while (listaPares != NULL) {
+        printf("%d ", listaPares->valor);
+        No *temp = listaPares;
+        listaPares = listaPares->prox;
+        free(temp);
+    }
+    printf("\n");
+
+    return 0;
 }
